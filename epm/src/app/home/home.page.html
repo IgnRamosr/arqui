@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Listado de Usuarios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="users.length > 0">
+    <ion-item *ngFor="let user of users">
+      {{ user.nombre }} {{ user.apellido }}
+      <ion-buttons slot="end">
+        <ion-button (click)="editUser(user.id, user)">Editar</ion-button>
+        <ion-button (click)="deleteUser(user.id)">Eliminar</ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+  <p *ngIf="noUsersMessage">{{ noUsersMessage }}</p>
+</ion-content>
