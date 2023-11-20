@@ -35,6 +35,7 @@ export class HomePage implements OnInit {
       }
     );
   }
+  
 
   getUsers() {
     this.http.get('http://localhost/ionic-backend/save-data.php?action=getUsers').subscribe(
@@ -130,7 +131,7 @@ export class HomePage implements OnInit {
         },
         {
           name: 'codCvv',
-          type: 'text',
+          type: 'number',
           value: user.codCvv,
           placeholder: 'Nuevo CVV'
         },
@@ -146,14 +147,73 @@ export class HomePage implements OnInit {
         {
           text: 'Editar',
           handler: async (data) => {
-            await this.updateUser(user.id, data);
+            if (this.areFieldsValid(data)) {
+              await this.updateUser(user.id, data);
+            } else {
+              await this.showValidationAlert();
+            }
           }
         }
       ]
     });
-  
+
     await alert.present();
   }
+
+  // areFieldsValid(data: any): boolean {
+  //   const onlyLetters = /^[A-Za-z\s]+$/;
+  //   const dateFormat = /^20(23|2[4-9]|[3-9]\d)-[0-1]\d$/;
+
+
+  
+  //   return (
+  //     onlyLetters.test(data.nombre.trim()) &&
+  //     onlyLetters.test(data.apellido.trim()) &&
+  //     onlyLetters.test(data.banco.trim()) &&
+  //     data.direccion.trim() !== '' &&
+  //     data.numTarjCred.trim() !== '' &&
+  //     dateFormat.test(data.fechaVencimiento.trim()) &&
+  //     data.fechaVencimiento.trim().length === 7 &&
+  //     data.codCvv.trim() !== '' &&
+  //     !data.codCvv.includes('-'),
+  //     !/\s/.test(data.fechaVencimiento.charAt(0))
+  //   );
+  // }
+
+  areFieldsValid(data: any): boolean {
+    const onlyLetters = /^[A-Za-z\s]+$/;
+    const dateFormat = /^20(23|2[4-9]|[3-9]\d)-[0-1]\d$/;
+    const nameFormat = /^[A-Za-z]{1,15}$/;
+    const cardNumberFormat = /^[\d\s]{12,19}$/;
+
+
+    return (
+      nameFormat.test(data.nombre.trim()) &&
+      nameFormat.test(data.apellido.trim()) &&
+      onlyLetters.test(data.banco.trim()) &&
+      data.direccion.trim() !== '' &&
+      cardNumberFormat.test(data.numTarjCred.trim()) &&
+      data.numTarjCred.trim() !== '' &&
+      dateFormat.test(data.fechaVencimiento.trim()) &&
+      data.fechaVencimiento.trim().length == 7 &&
+      data.codCvv.trim() !== '' &&
+      !data.codCvv.includes('-') &&
+      data.codCvv.length == 3
+    );
+  }
+  
+
+
+  async showValidationAlert() {
+    const alert = await this.alertController.create({
+      header: 'Campos Obligatorios',
+      message: 'Por favor, ingresa datos validos.',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
 
   async updateUser(userId: number, newData: UserData) {
     this.http.post('http://localhost/ionic-backend/save-data.php?action=updateUser', { id: userId, data: newData }).subscribe(
@@ -163,7 +223,7 @@ export class HomePage implements OnInit {
           console.log('Usuario actualizado con éxito');
           this.getUsers();
         } else {
-          console.error('Error al actualizar usuario555');
+          console.error('Error al actualizar usuario');
         }
       },
       (error) => {

@@ -27,6 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
         getUsers();
     } elseif ($_GET['action'] === 'deleteUser' && isset($_GET['id'])) {
         deleteUser($_GET['id']);
+    } elseif ($_GET['action'] === 'getUserById' && isset($_GET['id'])) {
+        getUserById($_GET['id']);
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
     if ($_GET['action'] === 'updateUser') {
@@ -41,6 +43,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
         }
     }
 }
+
+
+function getUserById($id) {
+    global $conn;
+
+    $sql = "SELECT * FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+
+    if ($stmt === false) {
+        $response = ['success' => false, 'message' => 'Error en la preparación de la consulta: ' . $conn->error];
+        echo json_encode($response);
+        exit;
+    }
+
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result === false) {
+        $response = ['success' => false, 'message' => 'Error al obtener el usuario: ' . $stmt->error];
+        echo json_encode($response);
+        exit;
+    }
+
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+        $response = ['success' => true, 'user' => $user];
+        echo json_encode($response);
+    } else {
+        $response = ['success' => false, 'message' => 'Usuario no encontrado'];
+        echo json_encode($response);
+    }
+
+    $stmt->close();
+}
+
 function getUsers() {
     global $conn;
 
