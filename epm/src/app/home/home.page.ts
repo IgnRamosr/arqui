@@ -160,37 +160,19 @@ export class HomePage implements OnInit {
     await alert.present();
   }
 
-  // areFieldsValid(data: any): boolean {
-  //   const onlyLetters = /^[A-Za-z\s]+$/;
-  //   const dateFormat = /^20(23|2[4-9]|[3-9]\d)-[0-1]\d$/;
-
-
-  
-  //   return (
-  //     onlyLetters.test(data.nombre.trim()) &&
-  //     onlyLetters.test(data.apellido.trim()) &&
-  //     onlyLetters.test(data.banco.trim()) &&
-  //     data.direccion.trim() !== '' &&
-  //     data.numTarjCred.trim() !== '' &&
-  //     dateFormat.test(data.fechaVencimiento.trim()) &&
-  //     data.fechaVencimiento.trim().length === 7 &&
-  //     data.codCvv.trim() !== '' &&
-  //     !data.codCvv.includes('-'),
-  //     !/\s/.test(data.fechaVencimiento.charAt(0))
-  //   );
-  // }
 
   areFieldsValid(data: any): boolean {
     const onlyLetters = /^[A-Za-z\s]+$/;
     const dateFormat = /^20(23|2[4-9]|[3-9]\d)-[0-1]\d$/;
     const nameFormat = /^[A-Za-z]{1,15}$/;
-    const cardNumberFormat = /^[\d\s]{12,19}$/;
+    const cardNumberFormat = /^[\d\s]{12,16}$/;
 
 
     return (
       nameFormat.test(data.nombre.trim()) &&
       nameFormat.test(data.apellido.trim()) &&
       onlyLetters.test(data.banco.trim()) &&
+      data.banco.length <= 20 &&
       data.direccion.trim() !== '' &&
       cardNumberFormat.test(data.numTarjCred.trim()) &&
       data.numTarjCred.trim() !== '' &&
