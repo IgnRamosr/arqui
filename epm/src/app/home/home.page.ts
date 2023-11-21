@@ -165,7 +165,9 @@ export class HomePage implements OnInit {
     const onlyLetters = /^[A-Za-z\s]+$/;
     const dateFormat = /^20(23|2[4-9]|[3-9]\d)-[0-1]\d$/;
     const nameFormat = /^[A-Za-z]{1,15}$/;
-    const cardNumberFormat = /^[\d\s]{12,16}$/;
+    const cardNumberFormat = /^(?:\d{3}\s){3,4}\d{3}$/;
+
+    ;
 
 
     return (
