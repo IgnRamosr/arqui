@@ -1,7 +1,0 @@
-{
-  "name": "epm",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}
